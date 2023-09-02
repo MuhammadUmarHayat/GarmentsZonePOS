@@ -1,0 +1,91 @@
+﻿
+
+
+CREATE TABLE [dbo].[vendors] (
+    [Id]      INT           IDENTITY (1, 1) NOT NULL,
+    [name]    NVARCHAR (50) NULL,
+    [company] NVARCHAR (50) NULL,
+    [address] NVARCHAR (50) NULL,
+    [phoneNo] NVARCHAR (50) NULL,
+    [status]  NVARCHAR (50) NULL,
+    CONSTRAINT [PK_vendors] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+
+
+
+
+
+CREATE TABLE [dbo].[sales] (
+    [Id]           INT           IDENTITY (1, 1) NOT NULL,
+    [productId]    INT           NULL,
+    [qty]          INT           NULL,
+    [size]         NVARCHAR (50) NULL,
+    [price]        INT           NULL,
+    [total]        INT           NULL,
+    [customerid]   NVARCHAR (50) NULL,
+    [customerName] NVARCHAR (50) NULL,
+    [saling_date]  DATE          NULL,
+    [phoneNo]      NVARCHAR (50) NULL,
+    [status]       NVARCHAR (50) NULL,
+    [productname]  NVARCHAR (50) NULL,
+    [orderNo]      NVARCHAR (50) NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+//Best selling products
+SELECT productname, productId, SUM(qty) AS total_qty FROM sales GROUP BY productId, productname ORDER BY total_qty DESC;
+
+CREATE TABLE [dbo].[products] (
+    [Id]              INT            IDENTITY (1, 1) NOT NULL,
+    [title]           NVARCHAR (50)  NULL,
+    [category]        NVARCHAR (50)  NULL,
+    [size]            NVARCHAR (50)  NULL,
+    [price]           INT            NULL,
+    [photo1]          IMAGE          NULL,
+    [photo2]          IMAGE          NULL,
+    [photo3]          IMAGE          NULL,
+    [photo4]          IMAGE          NULL,
+    [photo5]          IMAGE          NULL,
+    [qty]             INT            NULL,
+    [vendor]          NVARCHAR (50)  NULL,
+    [purchasing_date] DATE           NULL,
+    [SKUNo]           NVARCHAR (MAX) NULL,
+    [details]         NVARCHAR (50)  NULL,
+    [addedby]         NVARCHAR (50)  NULL,
+    [status]          NVARCHAR (50)  NULL,
+    [SalePrice]       INT            NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+//remaining quantity in stock;
+SELECT
+    p.Id AS productId,
+    p.title AS productName,
+    p.qty AS initialQuantity,
+    ISNULL(SUM(s.qty), 0) AS totalSold,
+    p.qty - ISNULL(SUM(s.qty), 0) AS remainingQuantity
+FROM
+    products p
+LEFT JOIN
+    sales s ON p.Id = s.productId
+GROUP BY
+    p.Id, p.title, p.qty
+ORDER BY
+    remainingQuantity;
+    ///////////create view ///////////////////////////////
+    CREATE VIEW ProductRemainingQuantityView AS
+SELECT
+    p.Id AS productId,
+    p.title AS productName,
+    p.qty AS initialQuantity,
+    ISNULL(SUM(s.qty), 0) AS totalSold,
+    p.qty - ISNULL(SUM(s.qty), 0) AS remainingQuantity
+FROM
+    products p
+LEFT JOIN
+    sales s ON p.Id = s.productId
+GROUP BY
+    p.Id, p.title, p.qty;
+
+    //////////////////////////////////////////////////

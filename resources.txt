@@ -1,0 +1,8 @@
+﻿
+how to insert an image and retrive image from sql using c#
+
+https://www.youtube.com/watch?v=dCtZ9iXD1qk
+https://www.youtube.com/watch?v=AYvGtilakto
+https://www.youtube.com/watch?v=Is7INDgHuX4
+
+https://www.c-sharpcorner.com/article/introduction-to-crystal-reports/
